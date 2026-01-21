@@ -13,26 +13,39 @@ The creator of a subscription service must be able to change the subscription fe
 Task 1: Each subscription service must have an owner, a fee, and a subscription period (e.g. 30 days), and be able to be paused or resumed individually.
 
 Status: Completed
-
 Solution: Created a SubscriptionService struct that holds each subscription service containing:
 
 - name
 - owner
 - fee
-- period
-- isPaused
-- balance,
+- periodLength
+- isActive
+- balance
 
 .
 .
 
-Task 2: The contract must include functions to pay for or extend a subscription
+Task 2: Write a function to create a subscription service
+
+Status: Completed
+Solution: Write a function that lets a person create a subscription service by:
+
+- Setting min-requirements for values (fee and periodLength) inside struct.
+- Assigning id to struct
+- Initiate struct with values
+- Register event on blockchain
+
+.
+.
+
+Task 3: The contract must include a function to pay for and extend a subscription
+
 Status: In-progress
-
----
+Solution:
 
 # To dos:
 
+Task: The contract must include function to extend a subscription
 Task: Check whether an address has an active subscription
 Task: Retrieve the expiration date of active subscriptions
 Task: Function to gift a subscription to another address
