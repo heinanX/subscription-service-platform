@@ -1,4 +1,4 @@
-pragma solidity 0.8.31;
+pragma solidity 0.8.33;
 
 contract SubscriptionPlatform {
     address public owner;
@@ -6,7 +6,7 @@ contract SubscriptionPlatform {
     struct SubscriptionService {
         address serviceOwner;
         string name;
-        uint256 fee; //same as uint, just preferred for clarity
+        uint256 fee;
         uint256 periodLength;
         bool isActive;
         uint256 balance;
@@ -15,6 +15,8 @@ contract SubscriptionPlatform {
     uint256 public serviceIdCounter;
 
     mapping(uint256 => SubscriptionService) public services;
+
+    // Memo: Mapping that tracks subscriptions: serviceId => user address => subscription expiry timestamp
     mapping(uint256 => mapping(address => uint256)) public subscriptions;
 
     event ServiceCreated(
@@ -23,13 +25,23 @@ contract SubscriptionPlatform {
         uint256 fee,
         uint256 periodLength
     );
-
+    event Subscribed(
+        uint256 indexed serviceId,
+        address indexed subscriber,
+        uint256 endTime
+    );
 
     constructor() {
         owner = msg.sender;
     }
 
-    function createService(uint256 _fee, uint256 _periodLength, string memory _name) external returns (uint256) {
+    // ----------------------------------------- functions
+
+    function createService(
+        uint256 _fee,
+        uint256 _periodLength,
+        string memory _name
+    ) external returns (uint256) {
         require(_fee > 0, "Fee must be > 0");
         require(_periodLength > 0, "Period must be > 0");
 
@@ -51,7 +63,21 @@ contract SubscriptionPlatform {
         return serviceId;
     }
 
+    function subscribe(uint256 _serviceId) external payable {
+        SubscriptionService storage service = services[_serviceId];
 
+        require(service.isActive, "Service is paused");
+        require(msg.value == service.fee, "Incorrect fee");
 
+        uint256 currentExpiry = subscriptions[_serviceId][msg.sender];
 
+        uint256 newExpiry = currentExpiry > block.timestamp
+            ? currentExpiry + service.periodLength
+            : block.timestamp + service.periodLength;
+
+        subscriptions[_serviceId][msg.sender] = newExpiry;
+        service.balance += msg.value;
+
+        emit Subscribed(_serviceId, msg.sender, newExpiry);
+    }
 }

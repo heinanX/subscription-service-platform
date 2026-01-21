@@ -27,7 +27,7 @@ Solution: Created a SubscriptionService struct that holds each subscription serv
 
 Task 2: Write a function to create a subscription service
 
-Status: Completed
+`Status: Completed`
 Solution: Write a function that lets a person create a subscription service by:
 
 - Setting min-requirements for values (fee and periodLength) inside struct.
@@ -40,13 +40,26 @@ Solution: Write a function that lets a person create a subscription service by:
 
 Task 3: The contract must include a function to pay for and extend a subscription
 
-Status: In-progress
+`Status: Complete`
+Solution: Get right service from mapping and applying new expiration time to subscriber
+
+- added service validation
+- added validation for incoming fee
+- checked current expiration with current time: if renewal => add service periodlength to current time, if not => take time and add to periodService
+- stored the new expiration with the subscriber
+- calculated balance and added to Subcription Service
+- Registered event on blockchain
+
+.
+.
+
+Task 4: Check whether an address has an active subscription
+
+`Status: In-progress`
 Solution:
 
 # To dos:
 
-Task: The contract must include function to extend a subscription
-Task: Check whether an address has an active subscription
 Task: Retrieve the expiration date of active subscriptions
 Task: Function to gift a subscription to another address
 Task: The creator of a subscription service must be able to change the subscription fee
