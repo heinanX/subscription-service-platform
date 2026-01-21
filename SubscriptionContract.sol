@@ -4,7 +4,7 @@ contract SubscriptionPlatform {
     address public owner;
 
     struct SubscriptionService {
-        address owner;
+        address serviceOwner;
         string name;
         uint256 fee; //same as uint, just preferred for clarity
         uint56 periodLength;
@@ -19,7 +19,7 @@ contract SubscriptionPlatform {
 
     event ServiceCreated(
         uint256 indexed serviceId,
-        address indexed owner,
+        address indexed serviceOwner,
         uint256 fee,
         uint256 periodLength
     );
@@ -37,7 +37,7 @@ contract SubscriptionPlatform {
 
         services[serviceId] = SubscriptionService({
             name: _name,
-            owner: msg.sender,
+            serviceOwner: msg.sender,
             fee: _fee,
             periodLength: _periodLength,
             isActive: true,
