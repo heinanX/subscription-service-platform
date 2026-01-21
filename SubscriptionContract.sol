@@ -51,6 +51,14 @@ contract SubscriptionPlatform {
         _;
     }
 
+    modifier isServiceOwner(uint256 _serviceId) {
+        require(
+            services[_serviceId].serviceOwner == msg.sender,
+            "Not service owner"
+        );
+        _;
+    }
+
     // ----------------------------------------- functions
 
     function createService(
@@ -128,5 +136,20 @@ contract SubscriptionPlatform {
         address user
     ) external view returns (uint256) {
         return subscriptions[serviceId][user];
+    }
+
+    function updateServiceFee(
+        uint256 _serviceId,
+        uint256 _newFee
+    ) external isServiceOwner(_serviceId) {
+        require(_newFee > 0, "Fee must be > 0");
+        services[_serviceId].fee = _newFee;
+    }
+
+    function toggleServiceStatus(
+        uint256 _serviceId
+    ) external isServiceOwner(_serviceId) {
+        SubscriptionService storage service = services[_serviceId];
+        service.isActive = !service.isActive;
     }
 }

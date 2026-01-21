@@ -85,8 +85,20 @@ Solution: Repeat of subscripe function's logic but with toUser's id as second ar
 .
 
 Task 6: The creator of a subscription service must be able to change the subscription fee
+Task 7: The creator of a subscription service must be able to pause or resume their own service
 
-# To dos:
+`Status: Complete`
+Solution: Add two separate functions.
 
-Task: The creator of a subscription service must be able to pause or resume their own service
-Task: The creator of a subscription service must be able to withdraw the revenue that's been acumilated for that specific subscription service.
+- One that takes two arguments: serviceId and newFee to update the subscription fee.
+- The other uses the logical NOT operator (!) to flip the current isActive value, pausing or resuming the service.
+
+.
+.
+
+Task 8: The creator of a subscription service must be able to withdraw the revenue that's been acumilated for that specific subscription service.
+
+`Status: In-progress`
+Solution:
+
+# To dos: COMPLETED
