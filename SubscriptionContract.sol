@@ -32,8 +32,23 @@ contract SubscriptionPlatform {
         uint256 endTime
     );
 
+    event SubscriptionGifted(
+        uint256 indexed serviceId,
+        address indexed from,
+        address indexed to,
+        uint256 endTime
+    );
+
     constructor() {
         owner = msg.sender;
+    }
+
+    modifier validateSubscriptionService(uint256 _serviceId) {
+        SubscriptionService storage service = services[_serviceId];
+        require(service.serviceOwner != address(0), "Service does not exist");
+        require(service.isActive, "Service is paused");
+        require(msg.value == service.fee, "Incorrect fee");
+        _;
     }
 
     // ----------------------------------------- functions
@@ -64,11 +79,10 @@ contract SubscriptionPlatform {
         return serviceId;
     }
 
-    function subscribe(uint256 _serviceId) external payable {
+    function subscribe(
+        uint256 _serviceId
+    ) external payable validateSubscriptionService(_serviceId) {
         SubscriptionService storage service = services[_serviceId];
-
-        require(service.isActive, "Service is paused");
-        require(msg.value == service.fee, "Incorrect fee");
 
         uint256 currentExpiry = subscriptions[_serviceId][msg.sender];
 
@@ -80,6 +94,26 @@ contract SubscriptionPlatform {
         service.balance += msg.value;
 
         emit Subscribed(_serviceId, msg.sender, newExpiry);
+    }
+
+    function giftSubscription(
+        uint256 _serviceId,
+        address _toUser
+    ) external payable validateSubscriptionService(_serviceId) {
+        require(_toUser != address(0), "Invalid recipient");
+
+        SubscriptionService storage service = services[_serviceId];
+
+        uint256 subscribersExpiration = subscriptions[_serviceId][_toUser];
+
+        uint256 newExpiry = subscribersExpiration > block.timestamp
+            ? subscribersExpiration + service.periodLength
+            : block.timestamp + service.periodLength;
+
+        subscriptions[_serviceId][_toUser] = newExpiry;
+        service.balance += msg.value;
+
+        emit SubscriptionGifted(_serviceId, msg.sender, _toUser, newExpiry);
     }
 
     function hasActiveSubscription(

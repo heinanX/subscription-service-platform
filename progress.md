@@ -12,7 +12,7 @@ The creator of a subscription service must be able to change the subscription fe
 
 Task 1: Each subscription service must have an owner, a fee, and a subscription period (e.g. 30 days), and be able to be paused or resumed individually.
 
-Status: Completed
+`Status: Completed`
 Solution: Created a SubscriptionService struct that holds each subscription service containing:
 
 - name
@@ -76,13 +76,17 @@ Solution: Get user's subscription through mapping and return expiration date.
 
 Task 5: Function to gift a subscription to another address
 
-`Status: in-progress`
-Solution:
+`Status: Complete`
+Solution: Repeat of subscripe function's logic but with toUser's id as second argument.
+
+- created a modifier to avoid repeating the same requirements logic
+
+.
+.
+
+Task 6: The creator of a subscription service must be able to change the subscription fee
 
 # To dos:
 
-Task:
-Task: Function to gift a subscription to another address
-Task: The creator of a subscription service must be able to change the subscription fee
 Task: The creator of a subscription service must be able to pause or resume their own service
 Task: The creator of a subscription service must be able to withdraw the revenue that's been acumilated for that specific subscription service.
