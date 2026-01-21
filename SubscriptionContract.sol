@@ -7,7 +7,7 @@ contract SubscriptionPlatform {
         address serviceOwner;
         string name;
         uint256 fee; //same as uint, just preferred for clarity
-        uint56 periodLength;
+        uint256 periodLength;
         bool isActive;
         uint256 balance;
     }
