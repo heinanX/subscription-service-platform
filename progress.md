@@ -61,9 +61,27 @@ Solution: Return a boolean by comparing the subscriber’s stored expiration tim
 - If the subscription is expired or does not exist, it returns false.
 - If the subscription is still valid, it returns true.
 
+.
+.
+
+Task: Retrieve the expiration time of an active subscription
+
+`Status: Complete`
+Solution: Get user's subscription through mapping and return expiration date.
+
+- Retrieve user's subscription expiration timestamp
+
+.
+.
+
+Task 5: Function to gift a subscription to another address
+
+`Status: in-progress`
+Solution:
+
 # To dos:
 
-Task: Retrieve the expiration date of active subscriptions
+Task:
 Task: Function to gift a subscription to another address
 Task: The creator of a subscription service must be able to change the subscription fee
 Task: The creator of a subscription service must be able to pause or resume their own service

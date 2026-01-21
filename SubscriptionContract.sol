@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.33;
 
 contract SubscriptionPlatform {
@@ -16,7 +17,7 @@ contract SubscriptionPlatform {
 
     mapping(uint256 => SubscriptionService) public services;
 
-    // Memo: Mapping that tracks subscriptions: serviceId => user address => subscription expiry timestamp
+    // Memo: Mapping that tracks subscriptions: serviceId => user address => subscription expiration timestamp
     mapping(uint256 => mapping(address => uint256)) public subscriptions;
 
     event ServiceCreated(
@@ -86,5 +87,12 @@ contract SubscriptionPlatform {
         address user
     ) external view returns (bool) {
         return subscriptions[serviceId][user] > block.timestamp;
+    }
+
+    function getSubscriptionExpiration(
+        uint256 serviceId,
+        address user
+    ) external view returns (uint256) {
+        return subscriptions[serviceId][user];
     }
 }
