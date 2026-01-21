@@ -55,8 +55,11 @@ Solution: Get right service from mapping and applying new expiration time to sub
 
 Task 4: Check whether an address has an active subscription
 
-`Status: In-progress`
-Solution:
+`Status: Complete`
+Solution: Return a boolean by comparing the subscriber’s stored expiration timestamp with the current block time.
+
+- If the subscription is expired or does not exist, it returns false.
+- If the subscription is still valid, it returns true.
 
 # To dos:
 

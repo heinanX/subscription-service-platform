@@ -80,4 +80,11 @@ contract SubscriptionPlatform {
 
         emit Subscribed(_serviceId, msg.sender, newExpiry);
     }
+
+    function hasActiveSubscription(
+        uint256 serviceId,
+        address user
+    ) external view returns (bool) {
+        return subscriptions[serviceId][user] > block.timestamp;
+    }
 }
