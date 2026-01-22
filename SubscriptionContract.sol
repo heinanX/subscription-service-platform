@@ -152,4 +152,16 @@ contract SubscriptionPlatform {
         SubscriptionService storage service = services[_serviceId];
         service.isActive = !service.isActive;
     }
+
+    function withdrawBalance(
+        uint256 _serviceId
+    ) external isServiceOwner(_serviceId) {
+        SubscriptionService storage service = services[_serviceId];
+        uint256 balance = service.balance;
+        require(balance > 0, "Insufficient balance.");
+
+        service.balance = 0;
+        (bool success, ) = service.serviceOwner.call{value: balance}("");
+        require(success, "Transfer failed");
+    }
 }

@@ -77,7 +77,7 @@ Solution: Get user's subscription through mapping and return expiration date.
 Task 5: Function to gift a subscription to another address
 
 `Status: Complete`
-Solution: Repeat of subscripe function's logic but with toUser's id as second argument.
+Solution: Repeat of subscribe function's logic but with toUser's id as second argument.
 
 - created a modifier to avoid repeating the same requirements logic
 
@@ -98,7 +98,7 @@ Solution: Add two separate functions.
 
 Task 8: The creator of a subscription service must be able to withdraw the revenue that's been acumilated for that specific subscription service.
 
-`Status: In-progress`
-Solution:
+`Status: Complete`
+Solution: Validate sufficient balance. If confirmed set balance to 0 and transfer ETH to service owner. If unsuccessful, it's rolled back.
 
 # To dos: COMPLETED
