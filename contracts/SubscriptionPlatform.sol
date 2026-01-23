@@ -39,6 +39,14 @@ contract SubscriptionPlatform {
         uint256 endTime
     );
 
+    event SubscriptionStatus(uint256 indexed serviceId, bool isActive);
+
+    event BalanceWithdrawn(
+        uint256 indexed serviceId,
+        address indexed serviceOwner,
+        uint256 balance
+    );
+
     constructor() {
         owner = msg.sender;
     }
@@ -151,6 +159,8 @@ contract SubscriptionPlatform {
     ) external isServiceOwner(_serviceId) {
         SubscriptionService storage service = services[_serviceId];
         service.isActive = !service.isActive;
+
+        emit SubscriptionStatus(_serviceId, service.isActive);
     }
 
     function withdrawBalance(
@@ -163,5 +173,7 @@ contract SubscriptionPlatform {
         service.balance = 0;
         (bool success, ) = service.serviceOwner.call{value: balance}("");
         require(success, "Transfer failed");
+
+        emit BalanceWithdrawn(_serviceId, service.serviceOwner, balance);
     }
 }
