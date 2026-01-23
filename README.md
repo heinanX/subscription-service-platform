@@ -1,57 +1,207 @@
-# Sample Hardhat 3 Beta Project (`mocha` and `ethers`)
+# SubscriptionPlatform Smart Contract
 
-This project showcases a Hardhat 3 Beta project using `mocha` for tests and the `ethers` library for Ethereum interactions.
+A decentralized subscription management platform built on Ethereum that allows service providers to create and manage subscription-based services, and users to subscribe or gift subscriptions to others.
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+## Overview
 
-## Project Overview
+SubscriptionPlatform is a Solidity smart contract that enables:
 
-This example project includes:
+- Service owners to create and manage subscription services
+- Users to subscribe to services using cryptocurrency
+- Users to gift subscriptions to other addresses
+- Automated subscription expiration tracking
+- Service owner balance management and withdrawals
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+## Features
 
-## Usage
+### For Service Owners
 
-### Running Tests
+- **Create Services**: Set up subscription services with custom fees and period lengths
+- **Manage Pricing**: Update subscription fees as needed
+- **Toggle Availability**: Pause or activate services at any time
+- **Withdraw Earnings**: Safely withdraw accumulated subscription fees
 
-To run all the tests in the project, execute the following command:
+### For Subscribers
 
-```shell
+- **Subscribe**: Purchase subscriptions for yourself
+- **Gift Subscriptions**: Purchase subscriptions for other users
+- **Automatic Renewal**: Subscriptions automatically extend when renewed before expiration
+- **Transparent Tracking**: View subscription status and expiration times
+
+## Smart Contract Details
+
+**Solidity Version**: 0.8.28  
+**License**: MIT
+
+### Main Functions
+
+#### Service Management
+
+```solidity
+createService(uint256 _fee, uint256 _periodLength, string memory _name)
+```
+
+Creates a new subscription service with specified fee (in wei) and period length (in seconds).
+
+```solidity
+updateServiceFee(uint256 _serviceId, uint256 _newFee)
+```
+
+Updates the subscription fee for an existing service (service owner only).
+
+```solidity
+toggleServiceStatus(uint256 _serviceId)
+```
+
+Toggles service between active and paused states (service owner only).
+
+```solidity
+withdrawBalance(uint256 _serviceId)
+```
+
+Withdraws accumulated fees from a service (service owner only).
+
+#### Subscription Functions
+
+```solidity
+subscribe(uint256 _serviceId) payable
+```
+
+Subscribes the caller to a service. Extends existing subscription if still active.
+
+```solidity
+giftSubscription(uint256 _serviceId, address _toUser) payable
+```
+
+Purchases a subscription for another user.
+
+#### View Functions
+
+```solidity
+hasActiveSubscription(uint256 serviceId, address user) returns (bool)
+```
+
+Checks if a user has an active subscription to a service.
+
+```solidity
+getSubscriptionExpiration(uint256 serviceId, address user) returns (uint256)
+```
+
+Returns the expiration timestamp of a user's subscription.
+
+## Installation
+
+1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd subscription-platform
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Compile the contract
+
+```bash
+npx hardhat compile
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
 npx hardhat test
 ```
 
-You can also selectively run the Solidity or `mocha` tests:
+The current test suite provides approximately 45-55% coverage, focusing on core functionality:
 
-```shell
-npx hardhat test solidity
-npx hardhat test mocha
+- Contract deployment
+- Service creation
+- Subscription purchases
+- Gift subscriptions
+- Balance withdrawals
+- Basic error handling
+
+## Usage Example
+
+### Creating a Service
+
+```javascript
+// Create a monthly subscription for 0.1 ETH
+const fee = ethers.parseEther("0.1");
+const periodLength = 30 * 24 * 60 * 60; // 30 days in seconds
+const tx = await subscriptionPlatform.createService(
+  fee,
+  periodLength,
+  "Premium Service"
+);
 ```
 
-### Make a deployment to Sepolia
+### Subscribing to a Service
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
-
-To run the deployment to a local chain:
-
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
+```javascript
+const serviceId = 0;
+const fee = ethers.parseEther("0.1");
+await subscriptionPlatform.subscribe(serviceId, { value: fee });
 ```
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+### Gifting a Subscription
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+```javascript
+const recipientAddress = "0x...";
+await subscriptionPlatform.giftSubscription(serviceId, recipientAddress, {
+  value: fee,
+});
 ```
 
-After setting the variable, you can run the deployment with the Sepolia network:
+### Checking Subscription Status
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+```javascript
+const isActive = await subscriptionPlatform.hasActiveSubscription(
+  serviceId,
+  userAddress
+);
+const expiryTime = await subscriptionPlatform.getSubscriptionExpiration(
+  serviceId,
+  userAddress
+);
 ```
+
+## Security Considerations
+
+- Uses checks-effects-interactions pattern for withdrawals
+- Implements proper access control with modifiers
+- Validates all inputs before state changes
+- Uses Solidity 0.8.28 with built-in overflow protection
+- Balance tracking separated per service
+
+## Events
+
+The contract emits the following events:
+
+```solidity
+event ServiceCreated(uint256 indexed serviceId, address indexed serviceOwner, uint256 fee, uint256 periodLength)
+event Subscribed(uint256 indexed serviceId, address indexed subscriber, uint256 endTime)
+event SubscriptionGifted(uint256 indexed serviceId, address indexed from, address indexed to, uint256 endTime)
+```
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+## Future Enhancements
+
+Potential improvements for future versions:
+
+- Refund mechanism for cancelled subscriptions
+- Multi-tier subscription levels
+- Subscription discounts for bulk purchases
+- Subscription transfer functionality
+- Automated subscription renewals
